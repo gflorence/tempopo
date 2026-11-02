@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
-  runApp(const TempopoApp());
+import 'data/recipe_repository.dart';
+import 'screens/recipe_list_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final repository = RecipeRepository();
+  final languageCode =
+      WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+  await repository.load(languageCode: languageCode);
+
+  runApp(TempopoApp(repository: repository));
 }
 
 class TempopoApp extends StatelessWidget {
-  const TempopoApp({super.key});
+  const TempopoApp({super.key, required this.repository});
+
+  final RecipeRepository repository;
 
   @override
   Widget build(BuildContext context) {
@@ -21,41 +34,16 @@ class TempopoApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       themeMode: ThemeMode.system,
-      home: const PhaseZeroScreen(),
-    );
-  }
-}
-
-class PhaseZeroScreen extends StatelessWidget {
-  const PhaseZeroScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(title: const Text('Tempopo')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.timer_outlined,
-                size: 96,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(height: 16),
-              Text('Tempopo', style: theme.textTheme.headlineMedium),
-              const SizedBox(height: 8),
-              const Text(
-                'Phase 0 : la chaîne de fabrication fonctionne ✅',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('fr'), Locale('en')],
+      // Français si le téléphone est en français, sinon anglais.
+      localeResolutionCallback: (locale, supportedLocales) =>
+          locale?.languageCode == 'fr' ? const Locale('fr') : const Locale('en'),
+      home: RecipeListScreen(repository: repository),
     );
   }
 }
