@@ -1,0 +1,55 @@
+name: Initialisation (une seule fois)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installer Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Créer le projet Flutter
+        run: |
+          flutter create --org com.gflorence --project-name tempopo --platforms android,ios --description "Multi-step kitchen timers" .
+
+      - name: Enregistrer les fichiers dans le dépôt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Phase 0 : création du projet Flutter"
+          git push
+
+      - name: Générer la clé de signature
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          keytool -genkeypair -v \
+            -keystore "$RUNNER_TEMP/tempopo.jks" -storetype PKCS12 \
+            -keyalg RSA -keysize 2048 -validity 10000 -alias tempopo \
+            -storepass "$KEYSTORE_PASSWORD" -keypass "$KEYSTORE_PASSWORD" \
+            -dname "CN=Tempopo, O=gflorence, C=FR"
+          base64 -w 0 "$RUNNER_TEMP/tempopo.jks" > "$RUNNER_TEMP/KEYSTORE_BASE64.txt"
+
+      - name: Mettre la clé à disposition (24 h)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cle-signature
+          path: ${{ runner.temp }}/KEYSTORE_BASE64.txt
+          retention-days: 1
