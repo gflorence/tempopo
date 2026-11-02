@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/recipe_repository.dart';
 import '../l10n/strings.dart';
 import '../models/recipe.dart';
+import 'recipe_editor_screen.dart';
 
 enum _RecipeAction { edit, duplicate, delete }
 
@@ -18,9 +19,16 @@ class RecipeListScreen extends StatelessWidget {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _openEditor(BuildContext context, Recipe? recipe) {
-    // L'éditeur sera branché à l'étape 1b.
-    _showMessage(context, S.of(context).editorComingSoon);
+  Future<void> _openEditor(BuildContext context, Recipe? recipe) async {
+    final s = S.of(context);
+    final savedName = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) =>
+            RecipeEditorScreen(repository: repository, recipe: recipe),
+      ),
+    );
+    if (savedName == null || !context.mounted) return;
+    _showMessage(context, s.recipeSaved(savedName));
   }
 
   Future<void> _duplicate(BuildContext context, Recipe recipe) async {
@@ -68,7 +76,7 @@ class RecipeListScreen extends StatelessWidget {
       ),
       body: ListenableBuilder(
         listenable: repository,
-        builder: (context, _) {
+        builder: (builderContext, _) {
           final recipes = repository.recipes;
 
           if (recipes.isEmpty) {
@@ -83,7 +91,7 @@ class RecipeListScreen extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 96),
             itemCount: recipes.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (itemContext, index) {
               final recipe = recipes[index];
               return Card(
                 child: ListTile(
@@ -104,7 +112,7 @@ class RecipeListScreen extends StatelessWidget {
                           _confirmDelete(context, recipe);
                       }
                     },
-                    itemBuilder: (context) => [
+                    itemBuilder: (menuContext) => [
                       PopupMenuItem(
                         value: _RecipeAction.edit,
                         child: Text(s.edit),

@@ -14,6 +14,9 @@ class S {
   // Général
   String get appTitle => 'Tempopo';
   String get cancel => _t('Annuler', 'Cancel');
+  String get save => _t('Enregistrer', 'Save');
+  String get validate => _t('Valider', 'OK');
+  String get undo => _t('Annuler', 'Undo');
 
   // Liste des recettes
   String get newRecipe => _t('Nouvelle recette', 'New recipe');
@@ -33,9 +36,58 @@ class S {
       _t('« $name » supprimée', '“$name” deleted');
   String recipeDuplicated(String name) =>
       _t('« $name » créée', '“$name” created');
-  String get editorComingSoon => _t(
-        'L’éditeur arrive à l’étape 1b 🙂',
-        'The editor is coming in step 1b 🙂',
+  String recipeSaved(String name) =>
+      _t('« $name » enregistrée', '“$name” saved');
+
+  // Éditeur de recette
+  String get editRecipe => _t('Modifier la recette', 'Edit recipe');
+  String get recipeName => _t('Nom de la recette', 'Recipe name');
+  String get recipeNameHint => _t('ex. Poulet rôti', 'e.g. Roast chicken');
+  String get nameRequired =>
+      _t('Donnez un nom à la recette', 'Please name the recipe');
+  String get steps => _t('Étapes', 'Steps');
+  String get noStepsYet => _t(
+        'Aucune étape pour l’instant. Ajoutez-en une ci-dessous.',
+        'No steps yet. Add one below.',
+      );
+  String get stepsRequired =>
+      _t('Ajoutez au moins une étape', 'Add at least one step');
+  String get reorderHint => _t(
+        'Maintenez ≡ pour déplacer une étape. Glissez-la vers la gauche pour la supprimer.',
+        'Hold ≡ to move a step. Swipe it left to delete it.',
+      );
+  String get addStep => _t('Ajouter une étape', 'Add a step');
+  String get addReminder => _t('Ajouter un rappel', 'Add a reminder');
+  String get stepDeleted => _t('Étape supprimée', 'Step deleted');
+  String get endMessage =>
+      _t('Message de fin (facultatif)', 'End message (optional)');
+  String get endMessageHint =>
+      _t('ex. Laisser reposer 10 min', 'e.g. Let rest for 10 min');
+  String get discardTitle =>
+      _t('Abandonner les modifications ?', 'Discard changes?');
+  String get discardBody => _t(
+        'Les modifications non enregistrées seront perdues.',
+        'Unsaved changes will be lost.',
+      );
+  String get discard => _t('Abandonner', 'Discard');
+  String get keepEditing => _t('Continuer', 'Keep editing');
+
+  // Fenêtre d'édition d'une étape
+  String stepNumber(int n) => _t('Étape $n', 'Step $n');
+  String get stepName => _t('Nom de l’étape (facultatif)', 'Step name (optional)');
+  String get stepNameHint => _t('ex. Saisie', 'e.g. Searing');
+  String get temperature => _t('Température (facultatif)', 'Temperature (optional)');
+  String get temperatureHint =>
+      _t('ex. 210 °C, feu doux', 'e.g. 210 °C, low heat');
+  String get reminderAfterStep => _t(
+        'Rappel à la fin de l’étape (facultatif)',
+        'Reminder at the end of the step (optional)',
+      );
+  String get reminderHint =>
+      _t('ex. Baisser le four à 190 °C', 'e.g. Lower the oven to 190 °C');
+  String get durationRequired => _t(
+        'La durée doit être supérieure à 0',
+        'Duration must be greater than 0',
       );
 
   // Nombres et durées
