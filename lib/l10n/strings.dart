@@ -141,6 +141,79 @@ class S {
         StepKind.other => _t('Autre', 'Other'),
       };
 
+  // Navigation
+  String get recipesTab => _t('Recettes', 'Recipes');
+  String get runningTab => _t('En cours', 'Running');
+
+  // Lancement et choix du mode
+  String get launchModeQuestion =>
+      _t('Comment enchaîner les étapes ?', 'How should the steps follow on?');
+  String get modeAutoTitle => _t('Automatique', 'Automatic');
+  String get modeAutoBody => _t(
+        'Les étapes s’enchaînent seules. Les rappels s’affichent au bon moment.',
+        'Steps follow on by themselves. Reminders show up at the right time.',
+      );
+  String get modeConfirmTitle => _t('Avec confirmation', 'With confirmation');
+  String get modeConfirmBody => _t(
+        'Je valide chaque étape avant de passer à la suivante.',
+        'I confirm each step before moving on.',
+      );
+
+  // Minuteur rapide
+  String get quickTimer => _t('Minuteur rapide', 'Quick timer');
+  String get quickTimerName => _t('Nom (facultatif)', 'Name (optional)');
+  String get quickTimerNameHint => _t('ex. Pâtes', 'e.g. Pasta');
+  String get start => _t('Lancer', 'Start');
+
+  // Écran « En cours »
+  String get runningTitle => _t('En cours', 'Cooking now');
+  String get noRunning => _t(
+        'Rien sur le feu pour l’instant.\nLancez une recette avec ▶ ou un minuteur rapide.',
+        'Nothing on the stove yet.\nStart a recipe with ▶ or a quick timer.',
+      );
+  String get statusRunning => _t('En cours', 'Running');
+  String get statusPaused => _t('En pause', 'Paused');
+  String get statusAwaiting => _t('À confirmer', 'Your turn');
+  String get statusFinished => _t('Terminée', 'Done');
+  String stepOf(int current, int total) =>
+      _t('Étape $current/$total', 'Step $current/$total');
+  String endsAt(String time, {required bool estimate}) => estimate
+      ? _t('Fin ≈ $time', 'Ends ≈ $time')
+      : _t('Fin à $time', 'Ends at $time');
+  String next(String what) => _t('Ensuite : $what', 'Next: $what');
+  String get nextStepReady =>
+      _t('Prêt pour l’étape suivante', 'Ready for the next step');
+  String get pause => _t('Pause', 'Pause');
+  String get resume => _t('Reprendre', 'Resume');
+  String get minusOneMinute => _t('−1 minute', '−1 minute');
+  String get plusOneMinute => _t('+1 minute', '+1 minute');
+  String get nextStep => _t('Étape suivante', 'Next step');
+  String get stop => _t('Arrêter', 'Stop');
+  String stopTitle(String name) =>
+      _t('Arrêter « $name » ?', 'Stop “$name”?');
+  String get stopBody => _t(
+        'La cuisson en cours sera arrêtée.',
+        'The current cooking will be stopped.',
+      );
+  String get done => _t('C’est fait !', 'Done!');
+  String get finish => _t('Terminé', 'Finish');
+
+  /// Compte à rebours : « 14:59 » ou « 1:04:59 » (secondes arrondies au-dessus).
+  String countdown(Duration remaining) {
+    final total = (remaining.inMilliseconds + 999) ~/ 1000;
+    final h = total ~/ 3600;
+    final m = (total % 3600) ~/ 60;
+    final sec = total % 60;
+    String two(int v) => v.toString().padLeft(2, '0');
+    return h > 0 ? '$h:${two(m)}:${two(sec)}' : '${two(m)}:${two(sec)}';
+  }
+
+  /// Résumé d'une étape : « 25 min · 190 °C ».
+  String stepSummary(int durationSeconds, String temperature) =>
+      temperature.isEmpty
+          ? duration(durationSeconds)
+          : '${duration(durationSeconds)} · $temperature';
+
   // Nombres et durées
   String stepCount(int n) => _fr
       ? (n <= 1 ? '$n étape' : '$n étapes')

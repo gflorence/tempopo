@@ -8,6 +8,7 @@ import '../theme/tempopo_typography.dart';
 import '../widgets/confirm_dialog.dart';
 import '../widgets/cooking_score.dart';
 import '../widgets/illustration.dart';
+import '../widgets/launch_mode_sheet.dart';
 import '../widgets/recipe_card.dart';
 import 'recipe_editor_screen.dart';
 
@@ -29,9 +30,8 @@ class RecipeDetailScreen extends StatelessWidget {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _launch(BuildContext context) {
-    // Branché sur le moteur de minuteurs en phase 2.
-    _showMessage(context, S.of(context).launchComingSoon);
+  void _launch(BuildContext context, Recipe recipe) {
+    startRecipe(context, recipe);
   }
 
   Future<void> _edit(BuildContext context, Recipe recipe) async {
@@ -153,7 +153,7 @@ class RecipeDetailScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
           child: FilledButton.icon(
-            onPressed: () => _launch(context),
+            onPressed: () => _launch(context, recipe),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(60),
               textStyle: TempopoTypography.manrope(18, weight: 800),

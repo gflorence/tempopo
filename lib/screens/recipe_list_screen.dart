@@ -7,25 +7,23 @@ import '../theme/tempopo_theme.dart';
 import '../theme/tempopo_typography.dart';
 import '../widgets/confirm_dialog.dart';
 import '../widgets/illustration.dart';
+import '../widgets/launch_mode_sheet.dart';
+import '../widgets/quick_timer_sheet.dart';
 import '../widgets/recipe_card.dart';
 import 'recipe_detail_screen.dart';
 import 'recipe_editor_screen.dart';
 
-/// Écran d'accueil : la bibliothèque de recettes.
+/// Onglet « Recettes » : la bibliothèque.
 class RecipeListScreen extends StatelessWidget {
-  const RecipeListScreen({super.key, required this.repository});
+  const RecipeListScreen({super.key, required this.repository, this.bottomBar});
 
   final RecipeRepository repository;
+  final Widget? bottomBar;
 
   void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  void _launch(BuildContext context) {
-    // Branché sur le moteur de minuteurs en phase 2.
-    _showMessage(context, S.of(context).launchComingSoon);
   }
 
   Future<void> _openDetail(BuildContext context, Recipe recipe) async {
@@ -79,6 +77,7 @@ class RecipeListScreen extends StatelessWidget {
     final s = S.of(context);
 
     return Scaffold(
+      bottomNavigationBar: bottomBar,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openEditor(context, null),
         icon: const Icon(Icons.add_rounded),
@@ -111,7 +110,7 @@ class RecipeListScreen extends StatelessWidget {
                         return RecipeCard(
                           recipe: recipe,
                           onTap: () => _openDetail(context, recipe),
-                          onLaunch: () => _launch(context),
+                          onLaunch: () => startRecipe(context, recipe),
                           onMenuAction: (action) {
                             switch (action) {
                               case RecipeMenuAction.edit:
@@ -135,7 +134,7 @@ class RecipeListScreen extends StatelessWidget {
   }
 }
 
-/// En-tête : logo Tempopo, signature, motif de vapeur, titre de section.
+/// En-tête : logo, signature, minuteur rapide, titre de section.
 class _LibraryHeader extends StatelessWidget {
   const _LibraryHeader({required this.count});
 
@@ -185,7 +184,13 @@ class _LibraryHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => startQuickTimer(context),
+            icon: const Icon(Icons.timer_outlined),
+            label: Text(s.quickTimer),
+          ),
+          const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
