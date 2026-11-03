@@ -20,3 +20,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope.ttf

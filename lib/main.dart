@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'data/recipe_repository.dart';
 import 'screens/recipe_list_screen.dart';
+import 'theme/tempopo_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,14 +26,8 @@ class TempopoApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tempopo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorSchemeSeed: Colors.deepOrange,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        colorSchemeSeed: Colors.deepOrange,
-        brightness: Brightness.dark,
-      ),
+      theme: TempopoTheme.light(),
+      darkTheme: TempopoTheme.dark(),
       themeMode: ThemeMode.system,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
