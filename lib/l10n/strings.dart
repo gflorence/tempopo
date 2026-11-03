@@ -13,12 +13,18 @@ class S {
 
   // Général
   String get appTitle => 'Tempopo';
+  String get tagline => _t('La cuisine a son rythme.', 'Cooking has a rhythm.');
   String get cancel => _t('Annuler', 'Cancel');
   String get save => _t('Enregistrer', 'Save');
   String get validate => _t('Valider', 'OK');
   String get undo => _t('Annuler', 'Undo');
+  String get moreOptions => _t('Plus d’options', 'More options');
 
-  // Liste des recettes
+  // Bibliothèque de recettes
+  String get myRecipes => _t('Mes recettes', 'My recipes');
+  String recipeCount(int n) => _fr
+      ? (n <= 1 ? '$n recette' : '$n recettes')
+      : (n == 1 ? '1 recipe' : '$n recipes');
   String get newRecipe => _t('Nouvelle recette', 'New recipe');
   String get noRecipes => _t(
         'Aucune recette pour l’instant.\nTouchez « Nouvelle recette » pour commencer.',
@@ -38,6 +44,21 @@ class S {
       _t('« $name » créée', '“$name” created');
   String recipeSaved(String name) =>
       _t('« $name » enregistrée', '“$name” saved');
+
+  // Lancement (phase 2)
+  String get startCooking => _t('Lancer la cuisson', 'Start cooking');
+  String launchRecipe(String name) =>
+      _t('Lancer « $name »', 'Start “$name”');
+  String get launchComingSoon => _t(
+        'Le lancement des minuteurs arrive à la phase 2 🙂',
+        'Timers are coming in phase 2 🙂',
+      );
+
+  // Détail d'une recette
+  String get cookingScore => _t('Partition de cuisson', 'Cooking score');
+  String get reminder => _t('Rappel', 'Reminder');
+  String get toFinish => _t('Pour finir', 'To finish');
+  String get readyDefault => _t('C’est prêt !', 'Ready!');
 
   // Éditeur de recette
   String get editRecipe => _t('Modifier la recette', 'Edit recipe');
