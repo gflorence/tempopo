@@ -1,28 +1,37 @@
 import 'dart:math';
 
-/// Une étape de recette : une durée, un nom et une température facultatifs,
-/// et le rappel affiché à la fin de l'étape (ignoré pour la dernière étape).
+import 'catalog.dart';
+
+export 'catalog.dart';
+
+/// Une étape de recette : une durée, un type (icône), un nom et une
+/// température facultatifs, et le rappel affiché à la fin de l'étape
+/// (ignoré pour la dernière étape).
 class RecipeStep {
   const RecipeStep({
     required this.durationSeconds,
+    this.kind = StepKind.other,
     this.name = '',
     this.temperature = '',
     this.reminder = '',
   });
 
   final int durationSeconds;
+  final StepKind kind;
   final String name;
   final String temperature;
   final String reminder;
 
   RecipeStep copyWith({
     int? durationSeconds,
+    StepKind? kind,
     String? name,
     String? temperature,
     String? reminder,
   }) {
     return RecipeStep(
       durationSeconds: durationSeconds ?? this.durationSeconds,
+      kind: kind ?? this.kind,
       name: name ?? this.name,
       temperature: temperature ?? this.temperature,
       reminder: reminder ?? this.reminder,
@@ -31,26 +40,35 @@ class RecipeStep {
 
   Map<String, dynamic> toJson() => {
         'durationSeconds': durationSeconds,
+        'kind': kind.key,
         'name': name,
         'temperature': temperature,
         'reminder': reminder,
       };
 
   factory RecipeStep.fromJson(Map<String, dynamic> json) {
+    final name = json['name'] as String? ?? '';
+    final temperature = json['temperature'] as String? ?? '';
+    final rawKind = json['kind'] as String?;
     return RecipeStep(
       durationSeconds: (json['durationSeconds'] as num?)?.toInt() ?? 0,
-      name: json['name'] as String? ?? '',
-      temperature: json['temperature'] as String? ?? '',
+      // Anciennes données (format v1) : type proposé automatiquement.
+      kind: rawKind != null
+          ? StepKind.fromKey(rawKind)
+          : StepKind.guess(name: name, temperature: temperature),
+      name: name,
+      temperature: temperature,
       reminder: json['reminder'] as String? ?? '',
     );
   }
 }
 
-/// Une recette : un nom, une liste d'étapes et un message de fin facultatif.
+/// Une recette : un nom, une illustration, des étapes et un message de fin.
 class Recipe {
   const Recipe({
     required this.id,
     required this.name,
+    this.illustration = RecipeIllustration.casserole,
     required this.steps,
     this.endMessage = '',
     required this.lastUsedAt,
@@ -58,6 +76,7 @@ class Recipe {
 
   final String id;
   final String name;
+  final RecipeIllustration illustration;
   final List<RecipeStep> steps;
   final String endMessage;
 
@@ -70,6 +89,7 @@ class Recipe {
   Recipe copyWith({
     String? id,
     String? name,
+    RecipeIllustration? illustration,
     List<RecipeStep>? steps,
     String? endMessage,
     DateTime? lastUsedAt,
@@ -77,6 +97,7 @@ class Recipe {
     return Recipe(
       id: id ?? this.id,
       name: name ?? this.name,
+      illustration: illustration ?? this.illustration,
       steps: steps ?? this.steps,
       endMessage: endMessage ?? this.endMessage,
       lastUsedAt: lastUsedAt ?? this.lastUsedAt,
@@ -86,16 +107,23 @@ class Recipe {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'illustration': illustration.key,
         'steps': steps.map((step) => step.toJson()).toList(),
         'endMessage': endMessage,
         'lastUsedAt': lastUsedAt.toIso8601String(),
       };
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
+    final name = json['name'] as String? ?? '';
     final rawSteps = json['steps'] as List<dynamic>? ?? const [];
+    final rawIllustration = json['illustration'] as String?;
     return Recipe(
       id: json['id'] as String? ?? generateId(),
-      name: json['name'] as String? ?? '',
+      name: name,
+      // Anciennes données (format v1) : illustration proposée d'après le nom.
+      illustration: rawIllustration != null
+          ? RecipeIllustration.fromKey(rawIllustration)
+          : RecipeIllustration.guessFromName(name),
       steps: rawSteps
           .map((e) => RecipeStep.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),

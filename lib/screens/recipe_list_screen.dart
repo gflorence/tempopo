@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/recipe_repository.dart';
+import '../widgets/illustration.dart';
 import '../l10n/strings.dart';
 import '../models/recipe.dart';
 import 'recipe_editor_screen.dart';
@@ -95,6 +96,7 @@ class RecipeListScreen extends StatelessWidget {
               final recipe = recipes[index];
               return Card(
                 child: ListTile(
+                  leading: RecipeIllustrationView(illustration: recipe.illustration, size: 52),
                   title: Text(recipe.name),
                   subtitle: Text(
                     '${s.stepCount(recipe.steps.length)} · '

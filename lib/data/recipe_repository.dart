@@ -10,7 +10,9 @@ import 'sample_recipes.dart';
 /// Gère la liste des recettes et leur enregistrement dans un fichier JSON.
 class RecipeRepository extends ChangeNotifier {
   static const String _fileName = 'recettes.json';
-  static const int _formatVersion = 1;
+
+  /// v1 : phase 1. v2 : ajout de l'illustration et du type d'étape.
+  static const int _formatVersion = 2;
 
   final List<Recipe> _recipes = [];
 
@@ -41,11 +43,17 @@ class RecipeRepository extends ChangeNotifier {
       try {
         final content = await file.readAsString();
         final data = jsonDecode(content) as Map<String, dynamic>;
+        final version = (data['version'] as num?)?.toInt() ?? 1;
         final list = data['recipes'] as List<dynamic>? ?? const [];
         _recipes
           ..clear()
           ..addAll(list.map(
               (e) => Recipe.fromJson(Map<String, dynamic>.from(e as Map))));
+
+        if (version < _formatVersion) {
+          _upgradeSampleRecipes();
+          await _writeToDisk();
+        }
         notifyListeners();
         return;
       } catch (error) {
@@ -61,6 +69,37 @@ class RecipeRepository extends ChangeNotifier {
       ..addAll(buildSampleRecipes(languageCode));
     await _writeToDisk();
     notifyListeners();
+  }
+
+  /// Migration v1 → v2 : les recettes d'exemple (reconnues à leur nom exact)
+  /// retrouvent leur illustration et les types d'étapes d'origine.
+  /// Les autres recettes gardent les valeurs proposées automatiquement.
+  void _upgradeSampleRecipes() {
+    final samples = [
+      ...buildSampleRecipes('fr'),
+      ...buildSampleRecipes('en'),
+    ];
+    for (var i = 0; i < _recipes.length; i++) {
+      final recipe = _recipes[i];
+      Recipe? sample;
+      for (final candidate in samples) {
+        if (candidate.name == recipe.name) {
+          sample = candidate;
+          break;
+        }
+      }
+      if (sample == null) continue;
+
+      final steps = <RecipeStep>[];
+      for (var j = 0; j < recipe.steps.length; j++) {
+        final kind = j < sample.steps.length
+            ? sample.steps[j].kind
+            : recipe.steps[j].kind;
+        steps.add(recipe.steps[j].copyWith(kind: kind));
+      }
+      _recipes[i] =
+          recipe.copyWith(illustration: sample.illustration, steps: steps);
+    }
   }
 
   /// Ajoute une nouvelle recette ou remplace une recette existante.

@@ -9,9 +9,11 @@ List<Recipe> buildSampleRecipes(String languageCode) {
     Recipe(
       id: generateId(),
       name: fr ? 'Œufs mollets' : 'Soft-boiled eggs',
+      illustration: RecipeIllustration.oeuf,
       steps: [
         RecipeStep(
           durationSeconds: 6 * 60,
+          kind: StepKind.water,
           name: fr ? 'Cuisson' : 'Cooking',
         ),
       ],
@@ -20,15 +22,18 @@ List<Recipe> buildSampleRecipes(String languageCode) {
     Recipe(
       id: generateId(),
       name: fr ? 'Poulet rôti' : 'Roast chicken',
+      illustration: RecipeIllustration.poulet,
       steps: [
         RecipeStep(
           durationSeconds: 15 * 60,
+          kind: StepKind.oven,
           name: fr ? 'Saisie' : 'Searing',
           temperature: '210 °C',
           reminder: fr ? 'Baisser le four à 190 °C' : 'Lower the oven to 190 °C',
         ),
         RecipeStep(
           durationSeconds: 25 * 60,
+          kind: StepKind.oven,
           name: fr ? 'Rôtissage' : 'Roasting',
           temperature: '190 °C',
           reminder:
@@ -36,6 +41,7 @@ List<Recipe> buildSampleRecipes(String languageCode) {
         ),
         RecipeStep(
           durationSeconds: 25 * 60,
+          kind: StepKind.oven,
           name: fr ? 'Fin de cuisson' : 'Final roasting',
           temperature: '190 °C',
         ),
@@ -46,9 +52,11 @@ List<Recipe> buildSampleRecipes(String languageCode) {
     Recipe(
       id: generateId(),
       name: fr ? 'Riz basmati' : 'Basmati rice',
+      illustration: RecipeIllustration.riz,
       steps: [
         RecipeStep(
           durationSeconds: 10 * 60,
+          kind: StepKind.fire,
           name: fr ? 'Cuisson' : 'Cooking',
           temperature: fr ? 'feu doux' : 'low heat',
           reminder: fr
@@ -57,6 +65,7 @@ List<Recipe> buildSampleRecipes(String languageCode) {
         ),
         RecipeStep(
           durationSeconds: 5 * 60,
+          kind: StepKind.rest,
           name: fr ? 'Repos' : 'Resting',
         ),
       ],

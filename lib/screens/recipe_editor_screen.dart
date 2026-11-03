@@ -156,6 +156,7 @@ class _RecipeEditorScreenState extends State<RecipeEditorScreen> {
     final recipe = Recipe(
       id: widget.recipe?.id ?? generateId(),
       name: name,
+      illustration: widget.recipe?.illustration ?? RecipeIllustration.guessFromName(name),
       steps: steps,
       endMessage: _endMessageController.text.trim(),
       lastUsedAt: DateTime.now(),
