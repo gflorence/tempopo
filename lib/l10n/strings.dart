@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../models/catalog.dart';
 
 /// Tous les textes de l'application, en français et en anglais.
 class S {
@@ -13,7 +14,7 @@ class S {
 
   // Général
   String get appTitle => 'Tempopo';
-  String get tagline => _t('La cuisine a son rythme.', 'Cooking has a rhythm.');
+  String get tagline => _t('La cuisine a son tempo.', 'Cooking has a rhythm.');
   String get cancel => _t('Annuler', 'Cancel');
   String get save => _t('Enregistrer', 'Save');
   String get validate => _t('Valider', 'OK');
@@ -110,6 +111,35 @@ class S {
         'La durée doit être supérieure à 0',
         'Duration must be greater than 0',
       );
+
+  // Illustrations et types d'étapes (éditeur)
+  String get illustration => _t('Illustration', 'Illustration');
+  String get suggestedIllustration => _t(
+        'Choisie d’après le nom — touchez-en une autre pour changer',
+        'Picked from the name — tap another one to change it',
+      );
+  String illustrationName(RecipeIllustration item) => switch (item) {
+        RecipeIllustration.casserole => _t('Casserole', 'Saucepan'),
+        RecipeIllustration.oeuf => _t('Œuf', 'Egg'),
+        RecipeIllustration.poulet => _t('Poulet', 'Chicken'),
+        RecipeIllustration.riz => _t('Bol de riz', 'Rice bowl'),
+        RecipeIllustration.ramen => _t('Ramen', 'Ramen'),
+        RecipeIllustration.cocotte => _t('Cocotte', 'Dutch oven'),
+        RecipeIllustration.poisson => _t('Poisson', 'Fish'),
+        RecipeIllustration.legumes => _t('Légumes', 'Vegetables'),
+        RecipeIllustration.ustensiles => _t('Ustensiles', 'Utensils'),
+        RecipeIllustration.minuteur => _t('Minuteur', 'Timer'),
+      };
+  String get stepType => _t('Type d’étape', 'Step type');
+  String get suggestedType =>
+      _t('Proposé automatiquement', 'Suggested automatically');
+  String stepKindName(StepKind kind) => switch (kind) {
+        StepKind.oven => _t('Four', 'Oven'),
+        StepKind.fire => _t('Feu', 'Stove'),
+        StepKind.water => _t('Eau', 'Water'),
+        StepKind.rest => _t('Repos', 'Rest'),
+        StepKind.other => _t('Autre', 'Other'),
+      };
 
   // Nombres et durées
   String stepCount(int n) => _fr
