@@ -8,8 +8,10 @@ import '../theme/tempopo_typography.dart';
 import '../widgets/illustration.dart';
 import '../widgets/quick_timer_sheet.dart';
 import '../widgets/timer_card.dart';
+import 'active_timer_screen.dart';
 
 /// Écran « En cours » : une carte par minuteur actif.
+/// Toucher une carte (hors boutons) ouvre le minuteur en grand.
 class RunningScreen extends StatelessWidget {
   const RunningScreen({super.key, this.bottomBar});
 
@@ -17,7 +19,8 @@ class RunningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final engine = AppServices.of(context).engine;
+    final services = AppServices.of(context);
+    final engine = services.engine;
 
     return Scaffold(
       bottomNavigationBar: bottomBar,
@@ -31,7 +34,7 @@ class RunningScreen extends StatelessWidget {
 
             return CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(child: _RunningHeader(count: timers.length)),
+                const SliverToBoxAdapter(child: _RunningHeader()),
                 if (timers.isEmpty)
                   const SliverFillRemaining(
                     hasScrollBody: false,
@@ -42,11 +45,15 @@ class RunningScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     sliver: SliverList.builder(
                       itemCount: timers.length,
-                      itemBuilder: (itemContext, index) => TimerCard(
-                        key: ValueKey(timers[index].id),
-                        timer: timers[index],
-                        now: now,
-                      ),
+                      itemBuilder: (itemContext, index) {
+                        final timer = timers[index];
+                        return GestureDetector(
+                          key: ValueKey(timer.id),
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => openActiveTimer(services, timer.id),
+                          child: TimerCard(timer: timer, now: now),
+                        );
+                      },
                     ),
                   ),
               ],
@@ -59,9 +66,7 @@ class RunningScreen extends StatelessWidget {
 }
 
 class _RunningHeader extends StatelessWidget {
-  const _RunningHeader({required this.count});
-
-  final int count;
+  const _RunningHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +79,7 @@ class _RunningHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Flexible(
+          Expanded(
             child: Text(
               s.runningTitle,
               style: TempopoTypography.fraunces(36, weight: 700, wonky: true)
@@ -82,16 +87,6 @@ class _RunningHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          if (count > 0)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(
-                '$count',
-                style: TempopoTypography.manrope(16, weight: 800)
-                    .copyWith(color: palette.mutedText),
-              ),
-            ),
-          const Spacer(),
           MotifView(
             motif: TempopoMotif.steam,
             width: 40,

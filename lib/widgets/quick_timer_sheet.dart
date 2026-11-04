@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../app_services.dart';
 import '../l10n/strings.dart';
 import '../models/recipe.dart';
+import '../screens/active_timer_screen.dart';
 import '../theme/tempopo_theme.dart';
 import '../theme/tempopo_typography.dart';
 
@@ -30,9 +31,9 @@ Future<void> startQuickTimer(BuildContext context) async {
     steps: [RecipeStep(durationSeconds: duration.inSeconds)],
     lastUsedAt: DateTime.now(),
   );
-  await services.engine.launch(recipe, quick: true);
+  final timer = await services.engine.launch(recipe, quick: true);
   HapticFeedback.mediumImpact();
-  services.openRunning();
+  openActiveTimer(services, timer.id);
 }
 
 class _QuickTimerSheet extends StatefulWidget {

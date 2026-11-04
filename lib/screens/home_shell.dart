@@ -7,6 +7,7 @@ import '../app_services.dart';
 import '../engine/timer_engine.dart';
 import '../l10n/strings.dart';
 import '../models/active_timer.dart';
+import '../services/vibration_service.dart';
 import '../theme/tempopo_colors.dart';
 import '../theme/tempopo_theme.dart';
 import 'recipe_list_screen.dart';
@@ -43,7 +44,7 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   /// Fin d'étape vécue en direct : vibration et affichage de « En cours ».
   /// (Les vraies sonneries et alertes arrivent en phase 3.)
   void _onTimerEvent(TimerEvent event) {
-    HapticFeedback.vibrate();
+    vibrateAlert();
     _services?.tabIndex.value = AppServices.runningTab;
   }
 

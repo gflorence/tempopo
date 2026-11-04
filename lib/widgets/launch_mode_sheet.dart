@@ -5,6 +5,7 @@ import '../app_services.dart';
 import '../l10n/strings.dart';
 import '../models/active_timer.dart';
 import '../models/recipe.dart';
+import '../screens/active_timer_screen.dart';
 import '../theme/tempopo_theme.dart';
 import '../theme/tempopo_typography.dart';
 import 'illustration.dart';
@@ -33,10 +34,10 @@ Future<void> startRecipe(BuildContext context, Recipe recipe) async {
     );
   }
 
-  await services.engine.launch(recipe, mode: mode);
+  final timer = await services.engine.launch(recipe, mode: mode);
   await services.repository.markUsed(recipe.id);
   HapticFeedback.mediumImpact();
-  services.openRunning();
+  openActiveTimer(services, timer.id);
 }
 
 /// Écran D : choix du mode d'enchaînement.

@@ -214,6 +214,10 @@ class S {
           ? duration(durationSeconds)
           : '${duration(durationSeconds)} · $temperature';
 
+  // Écran du minuteur actif
+  String get upNext => _t('Ensuite', 'Up next');
+  String get lastStep => _t('Dernière étape', 'Last step');
+
   // Nombres et durées
   String stepCount(int n) => _fr
       ? (n <= 1 ? '$n étape' : '$n étapes')
